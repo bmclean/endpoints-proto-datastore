@@ -1439,6 +1439,7 @@ class EndpointsModel(ndb.Model):
                    limit_max=QUERY_LIMIT_MAX,
                    user_required=False,
                    use_projection=False,
+                   produce_cursors=True,
                    **kwargs):
     """Creates an API query method decorator using provided metadata.
 
@@ -1499,6 +1500,8 @@ class EndpointsModel(ndb.Model):
           indexed, so this should be used with care. However, when used
           correctly, this will speed up queries, reduce payload size and even
           reduce cost at times.
+      produce_cursors: Boolean; indicates whether to generate cursors from query.
+          Defaults to True.
 
     Returns:
       A decorator that takes the metadata passed in and augments an API query
@@ -1594,6 +1597,7 @@ class EndpointsModel(ndb.Model):
           projection = [value for value in collection_fields
                         if value in cls._properties]
           query_options['projection'] = projection
+        query_options['produce_cursors'] = produce_cursors
         items, next_cursor, more_results = query.fetch_page(
             request_limit, **query_options)
 
